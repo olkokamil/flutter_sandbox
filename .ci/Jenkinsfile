@@ -117,10 +117,6 @@ pipeline {
                         sh label: 'Get Flutter dependencies', script: 'flutter pub get'
 
                         sh label: 'Build Linux Release', script: '''
-                          set -euxo pipefail
-                          unset CXX
-                          unset CC
-                        
                           flutter build linux --release -- \
                             -DCMAKE_C_COMPILER=/usr/bin/clang-19 \
                             -DCMAKE_CXX_COMPILER=/usr/bin/clang++-19 \
