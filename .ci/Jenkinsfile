@@ -118,7 +118,13 @@ pipeline {
 
                         sh label: 'Get Flutter dependencies', script: 'flutter pub get'
 
-                        sh label: 'Build Linux Release', script: 'flutter build linux --release'
+                        sh label: 'Build Linux Release', script: '''
+                          set -eux pipefail
+                          flutter build linux --release -- \
+                            -DCMAKE_C_COMPILER=/usr/bin/clang-19 \
+                            -DCMAKE_CXX_COMPILER=/usr/bin/clang++-19 \
+                            -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja
+                        '''
                         }
                     }
                 }
