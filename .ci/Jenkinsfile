@@ -106,9 +106,14 @@ pipeline {
                         unstash WORKSPACE_STASH_NAME
 
                         script { setupFlutterSdk() }
-                        withEnv(["PATH=/usr/bin:/bin:${env.PATH}"]) {
+                        withEnv([
+                          "CC=clang-19",
+                          "CXX=clang++-19",
+                          "PATH=/usr/bin:/bin:${env.PATH}"
+                        ]) {
   
                         sh label: 'Check Flutter version', script: 'flutter --version'
+                            
                         sh label: 'Run Flutter doctor', script: 'flutter doctor --verbose' // TODO: Should fail the pipeline on issues
 
                         sh label: 'Get Flutter dependencies', script: 'flutter pub get'
