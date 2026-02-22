@@ -116,23 +116,11 @@ pipeline {
 
                         sh label: 'Get Flutter dependencies', script: 'flutter pub get'
 
-sh label: 'Build Linux Release', script: '''
-  set -eux pipefail
-
-  unset CC
-  unset CXX
-
-  export CC=/usr/bin/clang-19
-  export CXX=/usr/bin/clang++-19
-
-
-  echo "CC=$CC"
-  echo "CXX=$CXX"
-  which clang-19
-  which clang++-19
-
-  flutter build linux --release
-'''
+                        sh label: 'Build Linux Release', script: '''
+                          export CC=/usr/bin/clang-19
+                          export CXX=/usr/bin/clang++-19
+                          flutter build linux --release
+                        '''
                         }
                     }
                 }
