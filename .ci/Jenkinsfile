@@ -117,7 +117,7 @@ pipeline {
                         sh label: 'Get Flutter dependencies', script: 'flutter pub get'
 
 sh label: 'Build Linux Release', script: '''
-  set -euxo pipefail
+  set -eux pipefail
 
   unset CC
   unset CXX
