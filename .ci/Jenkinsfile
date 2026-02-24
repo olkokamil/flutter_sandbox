@@ -99,30 +99,26 @@ pipeline {
                 }
 
                 stage('[Linux] Build Release') {
-                    when { expression { params.BUILD_LINUX } }
-                    agent { label params.LINUX_AGENT }
-
-                    steps {
-                        unstash WORKSPACE_STASH_NAME
-
-                        script { setupFlutterSdk() }
-                        withEnv([
-                          "PATH=/usr/local/bin:/usr/bin:/bin:${env.PATH}"
-                        ]) {
-  
-                        sh label: 'Check Flutter version', script: 'flutter --version'
-                            
-                        sh label: 'Run Flutter doctor', script: 'flutter doctor --verbose' // TODO: Should fail the pipeline on issues
-
-                        sh label: 'Get Flutter dependencies', script: 'flutter pub get'
-
-                        sh label: 'Build Linux Release', script: '''
-                          export CC=/usr/bin/clang-19
-                          export CXX=/usr/bin/clang++-19
-                          flutter build linux --release
-                        '''
-                        }
+                  when { expression { params.BUILD_LINUX } }
+                
+                  agent {
+                    docker {
+                      image "147459388270.dkr.ecr.eu-central-1.amazonaws.com/wc-uat-flutter-linux:3.38.9"
+                      args "-u 1000:1000 -v $WORKSPACE/.pub-cache:/home/build/.pub-cache"
+                      reuseNode true
                     }
+                  }
+                
+                  steps {
+                    sh "flutter --version"
+                    sh "flutter doctor --verbose"
+                    sh "flutter pub get"
+                    sh """
+                      export CC=/usr/bin/clang
+                      export CXX=/usr/bin/clang++
+                      flutter build linux --release
+                    """
+                  }
                 }
             }
         }
